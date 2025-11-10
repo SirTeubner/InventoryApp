@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:InventoryApp.Core.ViewModels;assembly=InventoryApp.Core"
+             x:DataType="viewmodels:DashboardViewModel"
+             x:Class="InventoryApp.Gui.MainPage">
+
+    <Grid RowDefinitions="Auto, *">
+        <Button Text="Load" />
+        
+        <CollectionView Grid.Row="1">
+            
+        </CollectionView>
+                
+    </Grid>
+    
+    
+</ContentPage>
