@@ -2,17 +2,27 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodels="clr-namespace:InventoryApp.Core.ViewModels;assembly=InventoryApp.Core"
+             xmlns:models="clr-namespace:InventoryApp.Core.Models;assembly=InventoryApp.Core"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:DataType="viewmodels:DashboardViewModel"
              x:Class="InventoryApp.Gui.MainPage">
 
-    <Grid RowDefinitions="Auto, *">
-        <Button Text="Load" />
-        
-        <CollectionView Grid.Row="1">
-            
-        </CollectionView>
-                
-    </Grid>
-    
-    
+    <ContentPage.Behaviors>
+        <toolkit:EventToCommandBehavior
+        EventName="Appearing"
+        Command="{Binding LoadCommand}" />
+    </ContentPage.Behaviors>
+
+
+    <CollectionView Grid.Row="1" ItemsSource="{Binding Items}">
+        <CollectionView.ItemTemplate>
+            <DataTemplate x:DataType="models:InventoryItem">
+                <Grid ColumnDefinitions="*,*">
+                    <Label Text="{Binding InventoryNumber}" />
+                    <Label Text="{Binding Title}" Grid.Column="1"/>
+                </Grid>
+            </DataTemplate>
+        </CollectionView.ItemTemplate>
+    </CollectionView>
+
 </ContentPage>

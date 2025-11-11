@@ -1,5 +1,6 @@
-﻿using InventoryApp.Core.ViewModels;
-using InventoryApp.Lib.Services;
+﻿using CommunityToolkit.Maui;
+using InventoryApp.Core.Services;
+using InventoryApp.Core.ViewModels;
 using Microsoft.Extensions.Logging;
 
 namespace InventoryApp.Gui
@@ -11,6 +12,7 @@ namespace InventoryApp.Gui
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .UseMauiCommunityToolkit()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -19,7 +21,7 @@ namespace InventoryApp.Gui
 
             builder.Services.AddSingleton<MainPage>();
             builder.Services.AddSingleton<DashboardViewModel>();
-            builder.Services.AddSingleton<IService>(new RestService());
+            builder.Services.AddSingleton<IRepository>(new RestService());
 
 #if DEBUG
     		builder.Logging.AddDebug();

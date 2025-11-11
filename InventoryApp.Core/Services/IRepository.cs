@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace InventoryApp.Lib.Services;
+namespace InventoryApp.Core.Services;
 
-public interface IService
+public interface IRepository
 {
     List<InventoryItem> Load();
 }
