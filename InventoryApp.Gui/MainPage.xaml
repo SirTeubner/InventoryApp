@@ -7,22 +7,34 @@
              x:DataType="viewmodels:DashboardViewModel"
              x:Class="InventoryApp.Gui.MainPage">
 
+
     <ContentPage.Behaviors>
         <toolkit:EventToCommandBehavior
-        EventName="Appearing"
-        Command="{Binding LoadCommand}" />
+            EventName="Appearing"
+            Command="{Binding LoadCommand}" />
     </ContentPage.Behaviors>
+    
+    <Grid RowDefinitions="Auto, Auto, *" Margin="15" RowSpacing="10">
 
+        <StackLayout>
+            <Label Text="API-Token" FontAttributes="Bold" />
+            <Label Text="{Binding Token}" />
+            <Button Text="Set Token" Command="{Binding SetTokenCommand}" />
+        </StackLayout>
 
-    <CollectionView Grid.Row="1" ItemsSource="{Binding Items}">
-        <CollectionView.ItemTemplate>
-            <DataTemplate x:DataType="models:InventoryItem">
-                <Grid ColumnDefinitions="*,*">
-                    <Label Text="{Binding InventoryNumber}" />
-                    <Label Text="{Binding Title}" Grid.Column="1"/>
-                </Grid>
-            </DataTemplate>
-        </CollectionView.ItemTemplate>
-    </CollectionView>
+        <Button Grid.Row="1" Text="Load" Command="{Binding LoadCommand}" />
+
+        <CollectionView Grid.Row="2" ItemsSource="{Binding Items}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:InventoryItem">
+                    <Grid ColumnDefinitions="*,*">
+                        <Label Text="{Binding InventoryNumber}" />
+                        <Label Text="{Binding Title}" Grid.Column="1"/>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </Grid>
 
 </ContentPage>

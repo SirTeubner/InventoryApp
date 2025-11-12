@@ -12,9 +12,9 @@ public class RestService : IRepository
 {
     private RestClient _client;
 
-    public RestService()
+    public RestService(string token, string apiBase)
     {
-        var options = new RestClientOptions("https://inventory.test/api")
+        var options = new RestClientOptions(apiBase)
         {
             ThrowOnAnyError = true,
             Timeout = new TimeSpan(0,2,0),
@@ -25,33 +25,34 @@ public class RestService : IRepository
         {
             {KnownHeaders.ContentType, "application/json"},
             {KnownHeaders.Accept, "application/json"},
+            {KnownHeaders.Authorization, $"Bearer {token}"},
         });
     }
 
 
     public List<InventoryItem> Load()
     {
-        var request = new RestRequest("/items", Method.Get);
-
-        var result = this._client.Get<InventoryResponse>(request);
-
-        System.Diagnostics.Debug.WriteLine(result);
-
-        if (result.Success)
+        try
         {
-            return result.Items;
+            var request = new RestRequest("/items", Method.Get);
+
+            var result = this._client.Get<InventoryResponse>(request);
+
+            System.Diagnostics.Debug.WriteLine(result);
+
+            if (result.Success)
+            {
+                return result.Items;
+            }
+            else
+            {
+                return new List<InventoryItem>();
+            }
         }
-        else
+        catch (Exception ex)
         {
+            System.Diagnostics.Debug.WriteLine(ex);
             return new List<InventoryItem>();
         }
-
-        /*
-        return new List<InventoryItem>()
-        {
-            new InventoryItem("INV123", "TEST"),
-            new InventoryItem("INV456", "PROBE")
-        };
-        */
     }
 }
