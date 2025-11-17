@@ -7,7 +7,15 @@ using System.Threading.Tasks;
 
 namespace InventoryApp.Gui.Services;
 
-public class PreferenceService : Core.Services.IPreferences
+public class PreferenceService : IPreferencesService
 {
-    // TODO: renmae IPreferences to  IPreferenceService
+    public string Get(string name, string defaultValue)
+    {
+        return Preferences.Get(name, defaultValue);
+    }
+
+    public void Set(string name, string nameValue)
+    {
+        Preferences.Set(name, nameValue);
+    }
 }

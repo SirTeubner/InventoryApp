@@ -12,7 +12,7 @@ public class RestService : IRepository
 {
     private RestClient _client;
 
-    public RestService(string token, string apiBase)
+    public RestService(/*string token,*/ string apiBase)
     {
         var options = new RestClientOptions(apiBase)
         {
@@ -25,7 +25,7 @@ public class RestService : IRepository
         {
             {KnownHeaders.ContentType, "application/json"},
             {KnownHeaders.Accept, "application/json"},
-            {KnownHeaders.Authorization, $"Bearer {token}"},
+           // {KnownHeaders.Authorization, $"Bearer {token}"},
         });
     }
 
@@ -34,6 +34,8 @@ public class RestService : IRepository
     {
         try
         {
+            // var token = Preferences.Get("ApiToken", string.Empty);
+
             var request = new RestRequest("/items", Method.Get);
 
             var result = this._client.Get<InventoryResponse>(request);

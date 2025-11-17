@@ -12,14 +12,18 @@
         <toolkit:EventToCommandBehavior
             EventName="Appearing"
             Command="{Binding LoadCommand}" />
+        <toolkit:EventToCommandBehavior
+            EventName="Appearing"
+            Command="{Binding LoadTokenCommand}" />
     </ContentPage.Behaviors>
     
-    <Grid RowDefinitions="Auto, Auto, *" Margin="15" RowSpacing="10">
+    <Grid RowDefinitions="Auto, Auto, Auto, *" Margin="15" RowSpacing="10">
 
         <StackLayout>
             <Label Text="API-Token" FontAttributes="Bold" />
-            <Label Text="{Binding Token}" />
+            <Entry Text="{Binding Token}" />
             <Button Text="Set Token" Command="{Binding SetTokenCommand}" />
+            <Button Text="Load Token" Command="{Binding LoadTokenCommand}"/>
         </StackLayout>
 
         <Button Grid.Row="1" Text="Load" Command="{Binding LoadCommand}" />

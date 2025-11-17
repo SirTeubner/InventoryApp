@@ -17,9 +17,9 @@ public partial class DashboardViewModel : ObservableObject
     private ObservableCollection<InventoryItem> _items = new();
 
     private IRepository _repository;
-    private IPreferences _preferences;
+    private IPreferencesService _preferences;
 
-    public DashboardViewModel(IRepository service, IPreferences preferences)
+    public DashboardViewModel(IRepository service, IPreferencesService preferences)
     {
         this._repository = service;
         this._preferences = preferences;
@@ -46,6 +46,12 @@ public partial class DashboardViewModel : ObservableObject
     void SetToken()
     {
         _preferences.Set("ApiToken", this.Token);
+    }
+
+    [RelayCommand]
+    void LoadToken()
+    {
+        this.Token = _preferences.Get("ApiToken", "");
     }
 
 }

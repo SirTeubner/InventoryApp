@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace InventoryApp.Core.Services;
 
-public interface IPreferences
+public interface IPreferencesService
 {
     void Set(string name, string nameValue);
 
