@@ -1,60 +1,70 @@
 ﻿using InventoryApp.Core.Models;
 using RestSharp;
+using RestSharp.Serializers.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace InventoryApp.Core.Services;
-
-public class RestService : IRepository
+namespace InventoryApp.Core.Services
 {
-    private RestClient _client;
-
-    public RestService(/*string token,*/ string apiBase)
+    public class RestService : IRepository
     {
-        var options = new RestClientOptions(apiBase)
+        private readonly RestClient _client;
+        private readonly IPreferencesService _preferences;
+
+        private const string ApiBase = "https://inventory.test/api";
+
+        public RestService(IPreferencesService preferences)
         {
-            ThrowOnAnyError = true,
-            Timeout = new TimeSpan(0,2,0),
-        };
+            _preferences = preferences;
 
-        this._client = new RestClient(options);
-        this._client.AddDefaultHeaders(new Dictionary<string, string>()
-        {
-            {KnownHeaders.ContentType, "application/json"},
-            {KnownHeaders.Accept, "application/json"},
-           // {KnownHeaders.Authorization, $"Bearer {token}"},
-        });
-    }
-
-
-    public List<InventoryItem> Load()
-    {
-        try
-        {
-            // var token = Preferences.Get("ApiToken", string.Empty);
-
-            var request = new RestRequest("/items", Method.Get);
-
-            var result = this._client.Get<InventoryResponse>(request);
-
-            System.Diagnostics.Debug.WriteLine(result);
-
-            if (result.Success)
+            var options = new RestClientOptions(ApiBase)
             {
-                return result.Items;
-            }
-            else
+                ThrowOnAnyError = true,
+                Timeout = new TimeSpan(0, 2, 0),
+            };
+
+            _client = new RestClient(options);
+        }
+
+        public List<InventoryItem> Load()
+        {
+            try
             {
+                // aktuellen Token aus Preferences lesen
+                var token = _preferences.Get("ApiToken", string.Empty);
+
+                var request = new RestRequest("/items", Method.Get);
+
+                // Header pro Request setzen
+                request.AddHeader(KnownHeaders.ContentType, "application/json");
+                request.AddHeader(KnownHeaders.Accept, "application/json");
+
+                if (!string.IsNullOrWhiteSpace(token))
+                {
+                    request.AddHeader(KnownHeaders.Authorization, $"Bearer {token}");
+                }
+
+                var result = _client.Get<InventoryResponse>(request);
+
+                System.Diagnostics.Debug.WriteLine(result);
+
+                if (result.Success)
+                {
+                    return result.Items;
+                }
+
                 return new List<InventoryItem>();
             }
-        }
-        catch (Exception ex)
-        {
-            System.Diagnostics.Debug.WriteLine(ex);
-            return new List<InventoryItem>();
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex);
+                return new List<InventoryItem>();
+            }
         }
     }
 }

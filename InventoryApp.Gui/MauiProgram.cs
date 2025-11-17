@@ -5,35 +5,37 @@ using InventoryApp.Gui.Services;
 using Microsoft.Extensions.Logging;
 using static System.Net.WebRequestMethods;
 
-namespace InventoryApp.Gui
-{
-    public static class MauiProgram
-    {
-        public static MauiApp CreateMauiApp()
-        {
-            var builder = MauiApp.CreateBuilder();
-            builder
-                .UseMauiApp<App>()
-                .UseMauiCommunityToolkit()
-                .ConfigureFonts(fonts =>
-                {
-                    fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
-                    fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
-                });
-            //string token = "1|sgWidkWdXPZTXRy4DJo6mbuSKisjv14ogyPDTNYD744c2e06";
-            // string token = Preferences.Get("ApiToken", string.Empty);
-            string apiBase = "https://inventory.test/api";
+namespace InventoryApp.Gui;
 
-            builder.Services.AddSingleton<MainPage>();
-            builder.Services.AddSingleton<DashboardViewModel>();
-            builder.Services.AddSingleton<IRepository>(new RestService(/*token,*/ apiBase));
-            builder.Services.AddSingleton<IPreferencesService>(new PreferenceService());
+public static class MauiProgram
+{
+    public static MauiApp CreateMauiApp()
+    {
+        var builder = MauiApp.CreateBuilder();
+        builder
+            .UseMauiApp<App>()
+            .UseMauiCommunityToolkit()
+            .ConfigureFonts(fonts =>
+            {
+                fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
+                fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+            });
+
+        // Registrierung der Services über DI
+        builder.Services.AddSingleton<MainPage>();
+        builder.Services.AddSingleton<DashboardViewModel>();
+
+        // Preferences-Service per Interface
+        builder.Services.AddSingleton<IPreferencesService, PreferenceService>();
+
+        // RestService braucht nur noch das Interface, kein Token im Konstruktor
+        builder.Services.AddSingleton<IRepository, RestService>();
 
 #if DEBUG
-    		builder.Logging.AddDebug();
+        builder.Logging.AddDebug();
 #endif
 
-            return builder.Build();
-        }
+        return builder.Build();
     }
+
 }

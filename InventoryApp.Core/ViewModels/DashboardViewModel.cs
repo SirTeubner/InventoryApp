@@ -1,57 +1,51 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using System.Collections.ObjectModel;
 using InventoryApp.Core.Models;
 using InventoryApp.Core.Services;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace InventoryApp.Core.ViewModels;
-
-public partial class DashboardViewModel : ObservableObject
+namespace InventoryApp.Core.ViewModels
 {
-    [ObservableProperty]
-    private ObservableCollection<InventoryItem> _items = new();
-
-    private IRepository _repository;
-    private IPreferencesService _preferences;
-
-    public DashboardViewModel(IRepository service, IPreferencesService preferences)
+    public partial class DashboardViewModel : ObservableObject
     {
-        this._repository = service;
-        this._preferences = preferences;
-    }
+        [ObservableProperty]
+        private ObservableCollection<InventoryItem> _items = new();
 
-    [RelayCommand]
-    void Load()
-    {
-        this.Items.Clear();
+        [ObservableProperty]
+        private string _token = string.Empty;
 
-        List<InventoryItem> items = _repository.Load();
+        private readonly IRepository _repository;
+        private readonly IPreferencesService _preferences;
 
-        foreach(InventoryItem item in items)
+        public DashboardViewModel(IRepository repository, IPreferencesService preferences)
         {
-            this.Items.Add(item);
+            _repository = repository;
+            _preferences = preferences;
         }
 
+        [RelayCommand]
+        private void Load()
+        {
+            Items.Clear();
+
+            var items = _repository.Load();
+
+            foreach (var item in items)
+            {
+                Items.Add(item);
+            }
+        }
+
+        [RelayCommand]
+        private void SetToken()
+        {
+            _preferences.Set("ApiToken", Token);
+        }
+
+        [RelayCommand]
+        private void LoadToken()
+        {
+            Token = _preferences.Get("ApiToken", string.Empty);
+        }
     }
-
-    [ObservableProperty]
-    private string _token = string.Empty;
-
-    [RelayCommand]
-    void SetToken()
-    {
-        _preferences.Set("ApiToken", this.Token);
-    }
-
-    [RelayCommand]
-    void LoadToken()
-    {
-        this.Token = _preferences.Get("ApiToken", "");
-    }
-
 }
